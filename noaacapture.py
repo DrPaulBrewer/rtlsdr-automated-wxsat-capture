@@ -23,7 +23,7 @@ def transcode(fname):
     subprocess.call(cmdline)
 
 def recordWAV(freq,fname,duration):
-    recordFM48k(freq,fname,duration)
+    recordFM(freq,fname,duration)
     transcode(fname)
 
 def spectrum(fname,duration):
