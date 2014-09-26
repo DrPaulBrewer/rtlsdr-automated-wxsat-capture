@@ -7,7 +7,7 @@ These are some automation scripts I am developing in python for weather satellit
 
 License:  GPLv2 or any later version
 
-assumptions: Linux-based computer, rtl-sdr usb dongle, stationary antenna
+assumptions: Linux-based computer, rtl-sdr usb dongle, stationary antenna, experienced python user
 
 goal:  record wav files for later processing
 
@@ -17,6 +17,11 @@ prerequistes:  working rtl-sdr, predict (text based, not gpredict) setup with co
 
 ###LICENSE 
 General Public License version 2.0, or any later version
+
+###DISCLAIMER
+NO WARRANTY:  ALL USE IS AT THE RISK OF THE USER.  These are scripts I use for hobbyist purposes.  There may
+be pre-requisites or system configuration differences which you will need to resolve in order to make use of these scripts in your project.  To do so requires patience and and, quite often, previous experience programming python 
+and/or maintaining Linux-based rtl-sdr software.
 
 ###dotpredict-predict.tle
 Modification of PREDICT's TLE file to provide orbit data for weather satellites NOAA-18,NOAA-19 
