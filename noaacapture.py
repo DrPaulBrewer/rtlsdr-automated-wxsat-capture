@@ -4,6 +4,8 @@ import subprocess
 
 satellites = ['NOAA-18','NOAA-19','NOAA-15']
 freqs = [137912500, 137100000, 137620000]
+sample = '44100'
+wavrate='11025'
 
 def runForDuration(cmdline, duration):
     try:
@@ -15,11 +17,24 @@ def runForDuration(cmdline, duration):
         print "OS Error: "+e.strerror
 
 def recordFM(freq, fname, duration):
-    cmdline = ['rtl_fm','-f',str(freq),'-s','44100','-g','40',fname+'.raw']
+    # still experimenting with options - unsure as to best settings
+    cmdline = ['rtl_fm',\
+               '-f',str(freq),\
+               '-s',sample,\
+               '-g','40',\
+               '-F','9',\
+               '-A','fast',\
+               '-E','deemp',\
+               '-E','dc',\
+               fname+'.raw']
     runForDuration(cmdline, duration)
 
 def transcode(fname):
-    cmdline = ['sox','-t','raw','-r','44100','-es','-b','16','-c','1','-V1',fname+'.raw',fname+'.wav','rate','11025']
+    cmdline = ['sox','-t','raw','-r',sample,'-es','-b','16','-c','1','-V1',fname+'.raw',fname+'.wav','rate',wavrate]
+    subprocess.call(cmdline)
+
+def decode(fname):
+    cmdline = ['/root/atpdec-1.7/atpdec',fname+'.wav']
     subprocess.call(cmdline)
 
 def recordWAV(freq,fname,duration):
@@ -49,6 +64,7 @@ while True:
     fname='./'+satName+'/'+str(aosTime)
     print "beginning pass "+fname+" predicted end "+str(losTime)
     recordWAV(freq,fname,losTime-aosTime)
+    decode(fname) # make picture
     # spectrum(fname,losTime-aosTime)
     print "finished pass "+fname+" at "+str(time.time())
     time.sleep(60.0)
