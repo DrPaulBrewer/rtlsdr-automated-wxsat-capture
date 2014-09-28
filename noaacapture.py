@@ -21,10 +21,9 @@ def recordFM(freq, fname, duration):
     cmdline = ['rtl_fm',\
                '-f',str(freq),\
                '-s',sample,\
-               '-g','40',\
+               '-g','43',\
                '-F','9',\
                '-A','fast',\
-               '-E','deemp',\
                '-E','dc',\
                fname+'.raw']
     runForDuration(cmdline, duration)
