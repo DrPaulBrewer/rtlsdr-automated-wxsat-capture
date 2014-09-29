@@ -79,7 +79,7 @@ while True:
     fname='./'+satName+'/'+str(aosTime)
     print "beginning pass "+fname+" predicted end "+str(losTime)
     recordWAV(freq,fname,losTime-aosTime)
-    if postProcess in sat:
+    if 'postProcess' in sat:
         sat['postProcess'](fname) # analyze, make pictures, graphs, etc.
     print "finished pass "+fname+" at "+str(time.time())
     time.sleep(60.0)
