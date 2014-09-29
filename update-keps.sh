@@ -1,6 +1,8 @@
 #!/bin/bash
 # mostly from PREDICT man page by KB2BD
-cd ./keps
+# Suitable as a cron.weekly script
+mkdir -p /tmp/keps
+cd /tmp/keps
 rm -f amateur.txt visual.txt weather.txt
 wget -qr www.celestrak.com/NORAD/elements/amateur.txt -O amateur.txt
 wget -qr www.celestrak.com/NORAD/elements/visual.txt -O visual.txt
