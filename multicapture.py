@@ -6,6 +6,14 @@ def decode(fname):
     cmdline = ['/root/atpdec-1.7/atpdec',fname+'.wav']
     subprocess.call(cmdline)
 
+def spectrum(fname,freq,duration):
+    flow = freq - 10000
+    fhigh = freq + 10000
+    fstep = 100
+    fparam = ":".join(map(str,[flow,fhigh,fstep]))
+    cmdline = ['rtl_power','-f',fparam,'-i','1m','-g','40',fname+'.csv']
+    runForDuration(cmdline,duration)
+
 satellites = [\
 	{'name': 'NOAA-18',\
 	'freq': 137912500,\
@@ -17,7 +25,9 @@ satellites = [\
 	'freq': 137620000,\
 	'postProcess': decode },\
 	{'name': 'OSCAR-50',\
-	 'freq': 436795000 },\
+	 'freq': 436795000,
+         'listen': spectrum,
+        },\
         {'name': 'ISS',\
          'freq': 145800000 }\
 ]
@@ -39,7 +49,6 @@ def recordFM(freq, fname, duration):
     cmdline = ['rtl_fm',\
                '-f',str(freq),\
                '-s',sample,\
-               '-g','43',\
                '-F','9',\
                '-A','fast',\
                '-E','dc',\
@@ -54,10 +63,6 @@ def transcode(fname):
 def recordWAV(freq,fname,duration):
     recordFM(freq,fname,duration)
     transcode(fname)
-
-def spectrum(fname,duration):
-    cmdline = ['rtl_power','-f','137000000:138000000:1000','-i','1m','-g','40',fname+'.csv']
-    runForDuration(cmdline,duration)
 
 def findNextPass():
     predictions = [pypredict.aoslos(s['name']) for s in satellites]
@@ -78,7 +83,10 @@ while True:
     # dir= sat name and filename = start time 
     fname='./'+satName+'/'+str(aosTime)
     print "beginning pass "+fname+" predicted end "+str(losTime)
-    recordWAV(freq,fname,losTime-aosTime)
+    if 'listen' in sat:
+        sat['listen'](fname, freq, losTime-aosTime)
+    else:
+        recordWAV(freq,fname,losTime-aosTime)
     if 'postProcess' in sat:
         sat['postProcess'](fname) # analyze, make pictures, graphs, etc.
     print "finished pass "+fname+" at "+str(time.time())
