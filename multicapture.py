@@ -24,15 +24,28 @@ def runForDuration(cmdline, duration):
         print "OS Error: "+e.strerror
 
 
-def recordSDR(freq, fname, duration):
+def recordSDR(fname, freq, duration):
     sdrOffset = -50000
     sdrRate = 20800*11
+    sdrFreq = int(freq)+int(sdrOffset)
     cmdline = ['rtl_sdr',\
-               '-f', str(freq+sdrOffset),\
+               '-f', str(sdrFreq),\
                '-s', str(sdrRate),\
                fname+'.sdr']
     runForDuration(cmdline, duration)
 
+def rawFM(fname, freq, duration):
+    sample = 20800
+    cmdline = ['rtl_fm',\
+               '-f',str(freq),\
+               '-M','raw',\
+               '-s',str(sample),\
+               '-g', '47',\
+               '-F','9',\
+#               '-A','fast',\
+               '-E','dc',\
+               fname+'M.raw']
+    runForDuration(cmdline, duration)
 
 def decode(fname):
 #    cmdline = ['atpdec',fname+'.wav']
@@ -54,22 +67,22 @@ def spectrum(fname,freq,duration):
 satellites = [\
 	{'name': 'NOAA-18',\
 	'freq': 137912500,\
-	'postProcess': decode },\
+	'listen': rawFM },\
 	{'name': 'NOAA-19',\
  	'freq': 137100000,\
 	'postProcess': decode },\
 	{'name': 'NOAA-15',\
 	'freq': 137620000,\
 	'postProcess': decode },\
-        {'name': 'OSCAR-7',\
-         'freq': 145950000, \
-         'listen': recordSDR },\
+#        {'name': 'OSCAR-7',\
+#         'freq': 145950000, \
+#         'listen': recordSDR },\
         {'name': 'FUNCUBE-1',\
          'freq': 145950000, \
          'listen': recordSDR },\
-        {'name': 'OSCAR-29',
-         'freq': 435850000, \
-         'listen': recordSDR },\
+#        {'name': 'OSCAR-29',
+#         'freq': 435850000, \
+#         'listen': recordSDR },\
 #	{'name': 'OSCAR-50',\
 #	 'freq': 436795000,\
 #        },\
